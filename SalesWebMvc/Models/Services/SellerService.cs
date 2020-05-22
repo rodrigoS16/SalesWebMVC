@@ -4,6 +4,7 @@ using SalesWebMvc.Data;
 using SalesWebMvc.Models.Services.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SalesWebMvc.Models.Services
 {
@@ -16,38 +17,39 @@ namespace SalesWebMvc.Models.Services
             _Context = context;
         }
 
-        public List<Seller> FindAll()
+        public async Task<List<Seller>> FindAllAsync()
         {
-            return _Context.Seller.ToList();
+            return await _Context.Seller.ToListAsync();
         }
 
-        public void Insert(Seller seller)
+        public async Task InsertAsync(Seller seller)
         {            
             _Context.Seller.Add(seller);
-            _Context.SaveChanges();
+            await _Context.SaveChangesAsync();
         }
 
-        public Seller FindById(int id)
+        public async Task<Seller> FindByIdAsync(int id)
         {
-            return _Context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);
+            return await _Context.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Seller seller = _Context.Seller.Find(id);
+            Seller seller = await _Context.Seller.FindAsync(id);
 
             _Context.Seller.Remove(seller);
-            _Context.SaveChanges();
+            await _Context.SaveChangesAsync();
         }
 
-        public void Update(Seller seller)
+        public async Task UpdateAsync(Seller seller)
         {
-            if (_Context.Seller.Any(x => x.Id == seller.Id))
+            bool hasAny = await _Context.Seller.AnyAsync(x => x.Id == seller.Id);
+            if (hasAny)
             {                
                 try
                 {
                     _Context.Update(seller);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
                 }
                 catch(DbUpdateConcurrencyException e)
                 {

@@ -24,16 +24,16 @@ namespace SalesWebMvc.Controllers
             _DepartmentService = departmentService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _SellerService.FindAll();
+            var list = await _SellerService.FindAllAsync();
 
             return View(list);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departmets = _DepartmentService.FindAll();
+            var departmets = await _DepartmentService.FindAllAsync();
             var viewModel = new SellerFormViewModel { Departments = departmets };
 
             return View(viewModel);
@@ -41,32 +41,32 @@ namespace SalesWebMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
             IActionResult result = null;
 
             if (!ModelState.IsValid) // validate if the JavaScript is enabled and already validated this record
             {
-                var departmets = _DepartmentService.FindAll();
+                var departmets = await _DepartmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Departments = departmets, Seller = seller };
 
                 result = View(viewModel);
             }
             else
             {
-                _SellerService.Insert(seller);
+                await _SellerService.InsertAsync(seller);
                 result = RedirectToAction(nameof(Index));
             }
             return result;
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             IActionResult result = RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             if (id != null)
             {
-                var obj = _SellerService.FindById(id.Value);
+                var obj = await _SellerService.FindByIdAsync(id.Value);
 
                 if (obj != null)
                 {
@@ -83,20 +83,20 @@ namespace SalesWebMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _SellerService.Delete(id);
+            await _SellerService.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             IActionResult result = RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             if (id != null)
             {
-                var obj = _SellerService.FindById(id.Value);
+                var obj = await _SellerService.FindByIdAsync(id.Value);
 
                 if (obj != null)
                 {
@@ -111,17 +111,17 @@ namespace SalesWebMvc.Controllers
             return result;
         }
 
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             IActionResult result = RedirectToAction(nameof(Error), new { message = "Id not founded" });
 
             if (id != null)
             {
-                var obj = _SellerService.FindById(id.Value);
+                var obj = await _SellerService.FindByIdAsync(id.Value);
 
                 if (obj != null)
                 {
-                    var departmets = _DepartmentService.FindAll();
+                    var departmets = await _DepartmentService.FindAllAsync();
                     var viewModel = new SellerFormViewModel { Seller = obj, Departments = departmets };
 
                     result = View(viewModel);
@@ -137,13 +137,13 @@ namespace SalesWebMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             IActionResult result = RedirectToAction(nameof(Error), new { message = "Id mismatch" });
 
             if (!ModelState.IsValid) // validate if the JavaScript is enabled and already validated this record
             {
-                var departmets = _DepartmentService.FindAll();
+                var departmets = await _DepartmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Departments = departmets, Seller = seller };
 
                 result = View(viewModel);
@@ -154,7 +154,7 @@ namespace SalesWebMvc.Controllers
                 {
                     try
                     {
-                        _SellerService.Update(seller);
+                        await _SellerService.UpdateAsync(seller);
                         result = RedirectToAction(nameof(Index));
                     }
                     catch (ApplicationException e)
