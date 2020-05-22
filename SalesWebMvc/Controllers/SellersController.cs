@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Update;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using SalesWebMvc.Models;
 using SalesWebMvc.Models.Services;
 using SalesWebMvc.Models.Services.Exceptions;
@@ -47,7 +49,7 @@ namespace SalesWebMvc.Controllers
 
         public IActionResult Delete(int? id)
         {
-            IActionResult result = NotFound();
+            IActionResult result = RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             if (id != null)
             {
@@ -57,6 +59,10 @@ namespace SalesWebMvc.Controllers
                 {
                     result = View(obj);
                 }
+            }
+            else
+            {
+                result = RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
             return result;
@@ -73,7 +79,7 @@ namespace SalesWebMvc.Controllers
 
         public IActionResult Details(int? id)
         {
-            IActionResult result = NotFound();
+            IActionResult result = RedirectToAction(nameof(Error), new { message = "Id not found" });
 
             if (id != null)
             {
@@ -84,13 +90,17 @@ namespace SalesWebMvc.Controllers
                     result = View(obj);
                 }
             }
+            else
+            {
+                result = RedirectToAction(nameof(Error), new { message = "Id not provided" });
+            }
 
             return result;
         }
 
         public IActionResult Edit(int? id)
         {
-            IActionResult result = NotFound();
+            IActionResult result = RedirectToAction(nameof(Error), new { message = "Id not founded" });
 
             if (id != null)
             {
@@ -104,6 +114,10 @@ namespace SalesWebMvc.Controllers
                     result = View(viewModel);
                 }
             }
+            else
+            {
+                result = RedirectToAction(nameof(Error), new { message = "Id not provided" });
+            }
 
             return result;
         }
@@ -112,7 +126,7 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
-            IActionResult result = BadRequest();
+            IActionResult result = RedirectToAction(nameof(Error), new { message = "Id mismatch" });
 
             if (id == seller.Id)
             {
@@ -121,18 +135,24 @@ namespace SalesWebMvc.Controllers
                     _SellerService.Update(seller);
                     result = RedirectToAction(nameof(Index));
                 }
-                catch( NotFoundException e)
+                catch (ApplicationException e)
                 {
-                    result = NotFound();
-                }
-                catch (DbConcurrencyException e)
-                {
-                    result = BadRequest();
-                }
-                
+                    result = RedirectToAction(nameof(Error), new { message = e.Message });
+                }                
             }
 
             return result;
+        }
+
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+
+            return View(viewModel);
         }
     }
 }
