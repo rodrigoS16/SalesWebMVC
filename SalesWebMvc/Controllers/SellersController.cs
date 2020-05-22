@@ -43,8 +43,21 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
         {
-            _SellerService.Insert(seller);
-            return RedirectToAction(nameof(Index));
+            IActionResult result = null;
+
+            if (!ModelState.IsValid) // validate if the JavaScript is enabled and already validated this record
+            {
+                var departmets = _DepartmentService.FindAll();
+                var viewModel = new SellerFormViewModel { Departments = departmets, Seller = seller };
+
+                result = View(viewModel);
+            }
+            else
+            {
+                _SellerService.Insert(seller);
+                result = RedirectToAction(nameof(Index));
+            }
+            return result;
         }
 
         public IActionResult Delete(int? id)
@@ -128,19 +141,28 @@ namespace SalesWebMvc.Controllers
         {
             IActionResult result = RedirectToAction(nameof(Error), new { message = "Id mismatch" });
 
-            if (id == seller.Id)
+            if (!ModelState.IsValid) // validate if the JavaScript is enabled and already validated this record
             {
-                try
-                {
-                    _SellerService.Update(seller);
-                    result = RedirectToAction(nameof(Index));
-                }
-                catch (ApplicationException e)
-                {
-                    result = RedirectToAction(nameof(Error), new { message = e.Message });
-                }                
-            }
+                var departmets = _DepartmentService.FindAll();
+                var viewModel = new SellerFormViewModel { Departments = departmets, Seller = seller };
 
+                result = View(viewModel);
+            }
+            else
+            {
+                if (id == seller.Id)
+                {
+                    try
+                    {
+                        _SellerService.Update(seller);
+                        result = RedirectToAction(nameof(Index));
+                    }
+                    catch (ApplicationException e)
+                    {
+                        result = RedirectToAction(nameof(Error), new { message = e.Message });
+                    }
+                }
+            }
             return result;
         }
 
