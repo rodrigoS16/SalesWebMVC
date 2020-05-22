@@ -14,7 +14,7 @@ namespace SalesWebMvc.Models.Services
         {
             _Context = context;
         }
-        
+
         public async Task<List<Department>> FindAllAsync()
         {
             return await _Context.Department.OrderBy(x => x.Name).ToListAsync();

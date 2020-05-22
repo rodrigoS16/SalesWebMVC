@@ -22,7 +22,7 @@ namespace SalesWebMvc.Models
             Name = name;
         }
 
-        public void AddSeller(Seller        seller)
+        public void AddSeller(Seller seller)
         {
             Sellers.Add(seller);
         }
@@ -32,7 +32,7 @@ namespace SalesWebMvc.Models
             Sellers.Remove(seller);
         }
 
-        public double TotalSales(DateTime   fromDate, DateTime toDate)
+        public double TotalSales(DateTime fromDate, DateTime toDate)
         {
             double ret = 0;
 

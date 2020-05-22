@@ -55,10 +55,10 @@ namespace SalesWebMvc
             var locatizationOptions = new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture(enUs),
-                SupportedCultures = new List<CultureInfo> { enUs},
+                SupportedCultures = new List<CultureInfo> { enUs },
                 SupportedUICultures = new List<CultureInfo> { enUs }
             };
-            
+
             app.UseRequestLocalization(locatizationOptions);
 
             if (env.IsDevelopment())

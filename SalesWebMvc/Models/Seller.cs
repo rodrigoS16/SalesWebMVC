@@ -33,11 +33,11 @@ namespace SalesWebMvc.Models
 
         [
             Range(100.0, 50000.0, ErrorMessage = "{0} size should be between {2} and {1}"),
-            Required(ErrorMessage = "{0} Required"),            
+            Required(ErrorMessage = "{0} Required"),
             Display(Name = "Base salary"),
             DisplayFormat(DataFormatString = "R$ {0:F2}")
-            //,DataType(DataType.Currency)
-            
+        //,DataType(DataType.Currency)
+
         ]
         public double BaseSalary { get; set; }
         public Department Department { get; set; }

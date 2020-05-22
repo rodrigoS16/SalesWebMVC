@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Pages.Internal.Account;
-using Microsoft.EntityFrameworkCore.Internal;
+﻿using Microsoft.EntityFrameworkCore.Internal;
 using SalesWebMvc.Models;
 using SalesWebMvc.Models.Enums;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SalesWebMvc.Data
 {
@@ -20,8 +17,8 @@ namespace SalesWebMvc.Data
 
         public void Seed()
         {
-            if (_Context.Department.Any() 
-                || _Context.Seller.Any() 
+            if (_Context.Department.Any()
+                || _Context.Seller.Any()
                 || _Context.SalesRecords.Any())
             {
                 return; // BD has been seeded
@@ -72,7 +69,7 @@ namespace SalesWebMvc.Data
 
 
             _Context.Department.AddRange(d1, d2, d3, d4);
-            _Context.Seller.AddRange(s1, s2, s3, s4,s5,s6);
+            _Context.Seller.AddRange(s1, s2, s3, s4, s5, s6);
 
             _Context.SalesRecords.AddRange(
                 r1, r2, r3, r4, r5, r6, r7, r8, r9, r10,
