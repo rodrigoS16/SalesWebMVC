@@ -32,9 +32,17 @@ namespace SalesWebMvc.Controllers
             return View(result);
         }
 
-        public IActionResult GroupingSearch()
+        public async Task<IActionResult> GroupingSearch(DateTime? fromDate,
+                                                        DateTime? toDate)
         {
-            return View();
+            fromDate = fromDate.HasValue == true ? fromDate : new DateTime(2018, 01, 01);
+            toDate = toDate.HasValue == true ? toDate : new DateTime(2018, 12, 31);
+
+            var result = await _Service.FindByDateGroupingAsync(fromDate, toDate);
+
+            ViewData["fromDate"] = fromDate.Value.ToString("yyyy-MM-dd");
+            ViewData["toDate"] = toDate.Value.ToString("yyyy-MM-dd");
+            return View(result);
         }
     }
 }
